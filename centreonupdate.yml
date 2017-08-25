@@ -1,0 +1,27 @@
+- hosts: poller-centreon
+  tasks:
+    - name: version du moteur centengine
+      shell: centengine -V | awk '{print $5}' | head -n 1
+      register: release
+
+    - name: Mise à jour des paquet
+      yum: name=* state=latest
+
+    - name: Vérification de la version de Centengine après mise à jour
+      shell:  centengine -V | awk '{print $5}' | head -n 1
+      register: new_release
+
+    - name: Affichage de la version de Centengine
+      debug: msg="Version de Centengine {{ new_release.stdout_lines }}"
+
+    - name: Notification de la mise à niveau de la version de Centengine
+      debug: msg="PVE à changé de version {{ release.stdout }} à {{ new_release.stdout }}"
+      when: release.stdout != new_release.stdout
+
+    - name: vérification des services à redémarrer
+      shell: needs-restarting | awk '{print $3}'
+      register: services
+
+    - name: Liste des service à redémarrer
+      debug: msg="{{ services.stdout_lines | count }} services à redémarrer ({{ services.stdout_lines | join (', ') }})"
+
