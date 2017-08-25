@@ -1,6 +1,6 @@
 # playbook_poller
 
-Playbook écrit pour mes poller centreon sous CentOS
+Playbook écrit pour mes pollers centreon sous CentOS
 
 Ce que fait ce playbook :
 
