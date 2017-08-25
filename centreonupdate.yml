@@ -24,4 +24,8 @@
 
     - name: Liste des service à redémarrer
       debug: msg="{{ services.stdout_lines | count }} services à redémarrer ({{ services.stdout_lines | join (', ') }})"
+      
+    - name: Redémarage du serveurs si des services sont à redémarrer 
+      shell: reboot
+      when: "{{ services.stdout_lines | count }} != 0"
 
